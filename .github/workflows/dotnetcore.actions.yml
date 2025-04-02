@@ -1,18 +1,43 @@
+name: .NET Core CI
+
+# Trigger the workflow on push or pull request to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-
-    - name: Install OpenSSL (Linux)
-      run: sudo apt-get update && sudo apt-get install -y libssl-dev
 
     - name: Setup .NET SDK 6.0
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
 
+    - name: Restore NuGet Packages
+      run: dotnet restore '**/WebApp.csproj'
+
     - name: Build Web App
       run: dotnet build '**/WebApp.csproj' --configuration Release
+
+    - name: Run Unit Tests
+      run: dotnet test '**/*UnitTest*.csproj' --configuration Release
+
+    - name: Create Web App Package (.zip)
+      run: |
+        dotnet publish '**/WebApp.csproj' --configuration Release --output ${{ github.workspace }}/publish
+        Compress-Archive -Path "${{ github.workspace }}/publish/*" -DestinationPath "${{ github.workspace }}/WebApp.zip"
+
+    - name: Upload Artifact (WebApp.zip)
+      uses: actions/upload-artifact@v3
+      with:
+        name: WebApp
+        path: ${{ github.workspace }}/WebApp.zip
