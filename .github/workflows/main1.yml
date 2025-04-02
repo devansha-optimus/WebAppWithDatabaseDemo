@@ -37,9 +37,10 @@ jobs:
         dotnet publish '**/WebApp.csproj' --configuration Release --output ${{ github.workspace }}/publish
         Compress-Archive -Path "${{ github.workspace }}/publish/*" -DestinationPath "${{ github.workspace }}/WebApp.zip"
 
-    - name: Upload Artifact (WebApp.zip)
-      uses: actions/upload-artifact@v3.0.0
-      with:
-        name: WebApp
-        path: ${{ github.workspace }}/WebApp.zip
+   - name: Upload Artifact (WebApp.zip)
+     uses: actions/upload-artifact@v2
+     with:
+       name: WebApp
+       path: ${{ github.workspace }}/WebApp.zip
+
 
