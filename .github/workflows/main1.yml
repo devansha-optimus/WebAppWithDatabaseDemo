@@ -1,6 +1,6 @@
 name: .NET Core CI
 
-# Trigger the workflow on push or pull request to the 'main' branch
+# Trigger the workflow on push, pull request, or manual trigger
 on:
   push:
     branches:
@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # ✅ Added this for manual trigger
 
 jobs:
   build:
