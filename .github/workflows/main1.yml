@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Setup .NET SDK 6.0
       uses: actions/setup-dotnet@v3
@@ -37,9 +37,9 @@ jobs:
         dotnet publish '**/WebApp.csproj' --configuration Release --output ${{ github.workspace }}/publish
         Compress-Archive -Path "${{ github.workspace }}/publish/*" -DestinationPath "${{ github.workspace }}/WebApp.zip"
 
-   - name: Upload Artifact (WebApp.zip)
-     uses: actions/upload-artifact@v2
-     with:
+    - name: Upload Artifact (WebApp.zip)
+      uses: actions/upload-artifact@v4
+      with:
        name: WebApp
        path: ${{ github.workspace }}/WebApp.zip
 
