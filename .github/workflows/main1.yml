@@ -22,8 +22,17 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+       fetch-depth: 0
+
+    - name: List Directory Structure
+      run: dir /s
+
     - name: Restore NuGet Packages
-      run: dotnet restore '**/WebApp/WebApp.csproj'
+      run: dotnet restore 'src/WebApp/WebApp.csproj'
+
 
     - name: Build Web App
       run: dotnet build '**/WebApp/WebApp.csproj' --configuration Release
