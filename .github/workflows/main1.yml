@@ -27,11 +27,9 @@ jobs:
       with:
        fetch-depth: 0
 
-    - name: List Directory Structure
-      run: dir /s
-
+   
     - name: Restore NuGet Packages
-      run: dotnet restore 'src/WebApp/WebApp.csproj'
+      run: dotnet restore '*/WebApp/WebApp.csproj'
 
 
     - name: Build Web App
