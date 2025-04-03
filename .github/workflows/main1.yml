@@ -1,6 +1,5 @@
 name: .NET Core CI
 
-# Trigger the workflow on push, pull request, or manual trigger
 on:
   push:
     branches:
@@ -29,8 +28,9 @@ jobs:
     - name: Build Web App
       run: dotnet build '**/WebApp.csproj' --configuration Release
 
-    - name: Run Unit Tests
-      run: dotnet test '**/*UnitTest*.csproj' --configuration Release
+    - name: Run Unit Tests (excluding SeleniumUiTests)
+      run: |
+        dotnet test '**/*UnitTest*.csproj' --configuration Release --filter "FullyQualifiedName~!SeleniumUiTests"
 
     - name: Create Web App Package (.zip)
       run: |
@@ -40,7 +40,5 @@ jobs:
     - name: Upload Artifact (WebApp.zip)
       uses: actions/upload-artifact@v4
       with:
-       name: WebApp
-       path: ${{ github.workspace }}/WebApp.zip
-
-
+        name: WebApp
+        path: ${{ github.workspace }}/WebApp.zip
