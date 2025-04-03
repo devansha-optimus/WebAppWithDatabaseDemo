@@ -23,10 +23,10 @@ jobs:
         dotnet-version: '6.0.x'
 
     - name: Restore NuGet Packages
-      run: dotnet restore '**/WebApp.csproj'
+      run: dotnet restore '**/WebApp/WebApp.csproj'
 
     - name: Build Web App
-      run: dotnet build '**/WebApp.csproj' --configuration Release
+      run: dotnet build '**/WebApp/WebApp.csproj' --configuration Release
 
     - name: Run Unit Tests (excluding SeleniumUiTests)
       run: |
@@ -34,7 +34,7 @@ jobs:
 
     - name: Create Web App Package (.zip)
       run: |
-        dotnet publish '**/WebApp.csproj' --configuration Release --output ${{ github.workspace }}/publish
+        dotnet publish '**/WebApp/WebApp.csproj' --configuration Release --output ${{ github.workspace }}/publish
         Compress-Archive -Path "${{ github.workspace }}/publish/*" -DestinationPath "${{ github.workspace }}/WebApp.zip"
 
     - name: Upload Artifact (WebApp.zip)
