@@ -51,6 +51,6 @@ jobs:
     - name: Deploy to Server (Example for Azure)
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'your-azure-app-name'
+        app-name: 'WebApp-Dotnet-RG-Devansh-POC'
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
         package: ./publish
