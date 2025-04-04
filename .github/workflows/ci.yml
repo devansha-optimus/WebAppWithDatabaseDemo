@@ -1,4 +1,4 @@
-name: .NET Core CI
+name: .NET Core CI/CD
 
 on:
   push:
@@ -6,8 +6,11 @@ on:
       - main  # Trigger workflow on push to the main branch
   pull_request:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # Trigger workflow on PRs targeting main
+  workflow_dispatch:  # Manual trigger option
+
+env:
+  DOTNET_VERSION: '6.0.x'
 
 jobs:
   build:
@@ -20,7 +23,15 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'  # Specify the version you are using
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
     - name: Restore Dependencies
       run: dotnet restore WebApp/WebApp.csproj
@@ -34,7 +45,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'  # Deploy only on the main branch
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.base_ref == 'main')
 
     steps:
     - name: Checkout Code
@@ -43,7 +54,13 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Debug Info
+      run: |
+        echo "Ref: $GITHUB_REF"
+        echo "Event: $GITHUB_EVENT_NAME"
+        echo "PR Base Ref: ${{ github.base_ref }}"
 
     - name: Publish
       run: dotnet publish WebApp/WebApp.csproj -c Release -o ./publish
